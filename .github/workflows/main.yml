@@ -17,8 +17,7 @@ jobs:
     
     outputs:
       bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
-      #ip_debian: ${{ steps.capturar_ip_debian.outputs.ip_debian }}
-      #ip_fedora: ${{ steps.capturar_ip_fedora.outputs.ip_fedora }}
+      ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
       
     steps:   #pasos
           #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
@@ -57,13 +56,9 @@ jobs:
         id: capturar_bucket
         run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
 
-      #- name: Capturar output de IP pública EC2 de Debian
-      #  id: capturar_ip_debian
-      #  run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> "$GITHUB_OUTPUT"
-
-      #- name: Capturar output de IP pública EC2 de Fedora
-      #  id: capturar_ip_fedora
-      #  run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> "$GITHUB_OUTPUT"
+      - name: Capturar URI del repositorio ECR
+        id: capturar_ecr_uri_url
+        run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_ENV"
 
       - name: Subir tfstate al bucket de S3
         run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1
@@ -74,18 +69,30 @@ jobs:
     needs: despliegue
 
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4 
+
+      - name: Configurar credenciales de AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1" 
+      
       #logearse en la ecr necesitamos el id de nuestra cuenta que esta en iam, panel y a la derecha
       - name: logearnos en aws ecr
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ needs.despliegue.outputs.ecr_repository_uri_url }}
 
       #construir la imagen Docker
       - name: Construir imagen Docker
-        run: docker build -t my-web-app .
+        run: docker build -t img-apacheNodeNpm .
 
       #etiquetar la imagen Docker
       - name: Etiquetar imagen Docker
-        run: docker tag my-web-app:latest <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/my-web-app:latest  
+        run: docker tag img-apacheNodeNpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:latest  
 
       #subir la imagen Docker a AWS ECR
       - name: Subir imagen Docker a ECR
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-web-app:latest    
+        run: docker push ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:latest    
