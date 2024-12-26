@@ -74,5 +74,18 @@ jobs:
     needs: despliegue
 
     steps:
+      #logearse en la ecr necesitamos el id de nuestra cuenta que esta en iam, panel y a la derecha
       - name: logearnos en aws ecr
         run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+      #construir la imagen Docker
+      - name: Construir imagen Docker
+        run: docker build -t my-web-app .
+
+      #etiquetar la imagen Docker
+      - name: Etiquetar imagen Docker
+        run: docker tag my-web-app:latest <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/my-web-app:latest  
+
+      #subir la imagen Docker a AWS ECR
+      - name: Subir imagen Docker a ECR
+        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/my-web-app:latest    
