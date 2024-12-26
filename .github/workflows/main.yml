@@ -37,6 +37,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # Cambiar al directorio donde están tus archivos .tf para que se pueda acceder a ellos en los comandos terraform
+      - name: Change to ArchivosTf directory
+        run: cd ArchivosTf
+
       - name: Terraform init
         id: init
         run: terraform init  
