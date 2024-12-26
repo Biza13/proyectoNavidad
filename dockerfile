@@ -8,6 +8,8 @@ RUN apt update -y && \
     apt install -y nodejs && \
     # Instalar npm
     apt install -y npm && \
+    # Instalar nano
+    apt install nano -y && \
     # Limpiar los archivos de cache de apt para reducir el tamaño de la imagen
     apt clean
 
