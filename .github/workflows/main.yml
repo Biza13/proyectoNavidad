@@ -37,35 +37,37 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # Cambiar al directorio donde están tus archivos .tf para que se pueda acceder a ellos en los comandos terraform
-      - name: Change to ArchivosTf directory
-        run: cd ArchivosTf
-
       - name: Terraform init
         id: init
         run: terraform init  
+        working-directory: ./ArchivosTf
        
       - name: Plan Terraform
         id: plan
         run: terraform plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        working-directory: ./ArchivosTf
   
       - name: Terraform Apply
         env:
          #definido previamente otro secreto con la clave publica deployer-key.pub
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        working-directory: ./ArchivosTf
 
       #capturar los outputs de terraform y hacerlos como outputs del job para poder usarlos en otros jobs
       - name: Capturar output de Terraform (Bucket)
         id: capturar_bucket
         run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
+        working-directory: ./ArchivosTf
 
       - name: Capturar URI del repositorio ECR
         id: capturar_ecr_uri_url
         run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_ENV"
+        working-directory: ./ArchivosTf
 
       - name: Subir tfstate al bucket de S3
         run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1
+        working-directory: ./ArchivosTf
 
   #segundo job para crear una imagen de docker y subirla a la ecr
   creacion-y-subida-de-imagen:
