@@ -1,0 +1,69 @@
+name: CI/CD a tope
+
+#evento para que se deployee cuando se hace el push
+#on:
+#  push:   #evento a hacer en este caso cuando hagamos un push
+#    branches:   #en la rama main
+#      - main
+
+#Este evento es para que solo se deployee si se lo digo manualmente
+on:
+ workflow_dispatch:
+
+jobs:
+#job para desplegar infraestructura de terraform
+  despliegue:   #nombre del job
+    runs-on: ubuntu-latest
+    
+    outputs:
+      bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
+      #ip_debian: ${{ steps.capturar_ip_debian.outputs.ip_debian }}
+      #ip_fedora: ${{ steps.capturar_ip_fedora.outputs.ip_fedora }}
+      
+    steps:   #pasos
+          #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
+          
+      - name: Checkout   #nombre del action
+        uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
+      
+      - name: Configurar credenciales aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
+          
+      #este paso es para instalar terraform en la maquina virtual
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        id: init
+        run: terraform init  
+       
+      - name: Plan Terraform
+        id: plan
+        run: terraform plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+  
+      - name: Terraform Apply
+        env:
+         #definido previamente otro secreto con la clave publica deployer-key.pub
+         TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
+        run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+
+      #capturar los outputs de terraform y hacerlos como outputs del job para poder usarlos en otros jobs
+      - name: Capturar output de Terraform (Bucket)
+        id: capturar_bucket
+        run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
+
+      #- name: Capturar output de IP pública EC2 de Debian
+      #  id: capturar_ip_debian
+      #  run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> "$GITHUB_OUTPUT"
+
+      #- name: Capturar output de IP pública EC2 de Fedora
+      #  id: capturar_ip_fedora
+      #  run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> "$GITHUB_OUTPUT"
+
+      - name: Subir tfstate al bucket de S3
+        run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1
