@@ -69,7 +69,7 @@ jobs:
         id: capturar_ecr_nombre
         run: echo "ecr_nombre_repositorio=$(terraform output -raw ecr_nombre_repositorio)" >> "$GITHUB_OUTPUT"
 
-      #crear artefactos con el nombre del bucket y con el nombre del repositorio
+      #crear artefactos con el nombre del bucket y con el nombre del repositorio, creara una carpeta si no existe y ahi metera los archivos 
       - name: Crear archivo con el nombre del bucket
         run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./terraform_outputs/bucket_name.txt
 
@@ -81,6 +81,7 @@ jobs:
         uses: actions/upload-artifact@v4.5.0
         with:
           name: terraform_outputs
+          #subira todo lo que haya en esta carpeta
           path: ./terraform_outputs/
 
       #eliminar la carpeta creada para los archivos de los artefactos
