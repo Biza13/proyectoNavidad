@@ -38,7 +38,9 @@ resource "aws_subnet" "subred-publica" {
 # Crear una gateway para Internet (Internet Gateway)
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.Desarrollo-web-VPC.id
-  tags = "internet_gateway"
+  tags = {
+    Name = "internet_gateway"
+  }
 }
 
 #creacion de l a tabla de enrutamiento

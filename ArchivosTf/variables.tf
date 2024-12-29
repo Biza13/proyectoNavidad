@@ -32,3 +32,8 @@ variable "ecr"{
     description = "nombre de la ecr"
     type = string
 }
+
+variable "public_key" {
+  description = "La clave pública para el despliegue"
+  type        = string
+}
