@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "apache_tarea" {
 
     { # Segundo contenedor (API JSON)
       name      = "json-api-container"
-      image     = ""  # Imagen base de Node.js (HAY QUE CAMBIARLA)
+      image     = "${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver"
       essential = true 
       portMappings = [
         {
