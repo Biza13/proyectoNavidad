@@ -28,7 +28,7 @@ jobs:
 
     # Descargar los artefactos que contienen el nombre del bucket y el repositorio ECR
     - name: Descargar artefactos
-      uses: actions/download-artifact@v4.5.0
+      uses: actions/download-artifact@v4.1.8
       with:
         name: terraform_outputs
         path: ./terraform_outputs    
