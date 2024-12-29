@@ -18,6 +18,7 @@ jobs:
     outputs:
       bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
       ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
+      ecr_nombre_repositorio: ${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}
       
     steps:
       # Este paso copia lo que hay en la rama main en la máquina virtual de Ubuntu
@@ -63,6 +64,28 @@ jobs:
         id: capturar_ecr_uri_url
         run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_OUTPUT"
         working-directory: ./ArchivosTf
+
+      - name: Capturar nombre del repositorio ECR
+        id: capturar_ecr_nombre
+        run: echo "ecr_nombre_repositorio=$(terraform output -raw ecr_nombre_repositorio)" >> "$GITHUB_OUTPUT"
+
+      #crear artefactos con el nombre del bucket y con el nombre del repositorio
+      - name: Crear archivo con el nombre del bucket
+        run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./terraform_outputs/bucket_name.txt
+
+      - name: Crear archivo con el nombre del repositorio ECR
+        run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./terraform_outputs/ecr_name.txt
+
+      # Subir los archivos como artefactos
+      - name: Subir artefactos con el nombre del bucket y el repositorio ECR
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: terraform_outputs
+          path: ./terraform_outputs/
+
+      #eliminar la carpeta creada para los archivos de los artefactos
+      - name: Eliminar la carpeta terraform_outputs y su contenido
+        run: rm -rf ./terraform_outputs    
 
   # Segundo job para crear una imagenes de Docker y subirlas a la ECR
   creacion-y-subida-de-imagen:
