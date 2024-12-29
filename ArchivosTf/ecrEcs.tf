@@ -17,7 +17,7 @@ data "aws_iam_role" "labrole" {
 resource "aws_ecs_task_definition" "apache_tarea" {
 
   #familia a la que pertenece la tarea
-  family                = "apache-task"
+  family                = "apache-tasks"
 
   #al ser academy nuestro role es labrole que hemos definido enel data arriba de este recurso
   #execution_role_arn    = aws_iam_role.labrole.arn 
