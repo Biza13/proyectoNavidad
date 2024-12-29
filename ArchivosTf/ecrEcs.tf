@@ -8,15 +8,23 @@ resource "aws_ecr_repository" "repositorio_ecr" {
   }
 }
 
+# Referencia al rol IAM existente en mi cuenta de aws que es (LabRole) usando su ARN
+data "aws_iam_role" "labrole" {
+  name = "LabRole" 
+}
+
 #definición de la tarea de ecs
 resource "aws_ecs_task_definition" "apache_tarea" {
 
   #familia a la que pertenece la tarea
   family                = "apache-task"
 
-  #al ser academy nuestro role es labrole
-  execution_role_arn    = aws_iam_role.labrole.arn 
-  task_role_arn         = aws_iam_role.labrole.arn  
+  #al ser academy nuestro role es labrole que hemos definido enel data arriba de este recurso
+  #execution_role_arn    = aws_iam_role.labrole.arn 
+  #task_role_arn         = aws_iam_role.labrole.arn  
+
+  execution_role_arn    = data.aws_iam_role.labrole.arn
+  task_role_arn         = data.aws_iam_role.labrole.arn 
 
   # Modo de red para Fargate
   network_mode          = "awsvpc"  
