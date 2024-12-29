@@ -30,7 +30,13 @@ jobs:
     - name: Descargar artefactos
       uses: actions/download-artifact@v4.1.8
       with:
-        name: terraform_outputs
+        name: bucket_name.txt
+        path: ./terraform_outputs 
+
+    - name: Descargar artefactos
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: ecr_name.txt
         path: ./terraform_outputs    
 
     #- name: Descargar tfstate desde el bucket de S3
