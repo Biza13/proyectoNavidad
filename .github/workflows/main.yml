@@ -87,11 +87,11 @@ jobs:
 
       # Construir la imagen Docker
       - name: Construir imagen Docker
-        run: docker build -t img-apacheNodeNpm .
+        run: docker build -t img-apachenodenpm .
 
       # Etiquetar la imagen Docker
       - name: Etiquetar imagen Docker
-        run: docker tag img-apacheNodeNpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:latest  
+        run: docker tag img-apachenodenpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:latest  
 
       # Subir la imagen Docker a ECR
       - name: Subir imagen Docker a ECR
