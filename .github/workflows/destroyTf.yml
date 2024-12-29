@@ -24,15 +24,20 @@ jobs:
 
     - name: Terraform Init
       run: terraform init  
+      working-directory: ArchivosTf
 
     - name: Descargar tfstate desde el bucket de S3
-      run: aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/terraform.tfstate terraform.tfstate --region us-east-1 
+      run: aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/terraform.tfstate terraform.tfstate --region us-east-1
+      working-directory: ArchivosTf
 
     - name: Vaciar el bucket de S3 antes de destruirlo
       run: aws s3 rm s3://${{ secrets.AWS_S3_BUCKET }}/ --recursive --region us-east-1  
+      working-directory: ArchivosTf
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
+      working-directory: ArchivosTf
 
     - name: Eliminar el archivo terraform.tfstate del repositorio
       run: rm terraform.tfstate 
+      working-directory: ArchivosTf
