@@ -56,7 +56,7 @@ jobs:
 
       - name: Capturar URI del repositorio ECR
         id: capturar_ecr_uri_url
-        run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_ENV"
+        run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_OUTPUT"
 
       - name: Subir tfstate al bucket de S3
         run: aws s3 cp terraform.tfstate s3://$(terraform output -raw s3) --region us-east-1
