@@ -42,14 +42,11 @@ jobs:
         working-directory: ./ArchivosTf
        
       - name: Plan Terraform
-        id: plan
-        run: terraform plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        run: terraform plan
         working-directory: ./ArchivosTf
   
       - name: Terraform Apply
-        env:
-          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
-        run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        run: terraform apply -auto-approve
         working-directory: ./ArchivosTf
 
       # Capturar los outputs de Terraform y hacerlos como outputs del job
