@@ -64,7 +64,7 @@ jobs:
         run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_OUTPUT"
         working-directory: ./ArchivosTf
 
-  # Segundo job para crear una imagen de Docker y subirla a la ECR
+  # Segundo job para crear una imagenes de Docker y subirlas a la ECR
   creacion-y-subida-de-imagen:
     runs-on: ubuntu-latest
     needs: despliegue
@@ -85,14 +85,26 @@ jobs:
       - name: Logearse en AWS ECR
         run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ needs.despliegue.outputs.ecr_repository_uri_url }}
 
-      # Construir la imagen Docker
+      # Construir la imagen Docker para alojar la web
       - name: Construir imagen Docker
         run: docker build -t img-apachenodenpm .
 
-      # Etiquetar la imagen Docker
+      # Etiquetar la imagen Docker de la web
       - name: Etiquetar imagen Docker
         run: docker tag img-apachenodenpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-apachenodenpm  
 
-      # Subir la imagen Docker a ECR
+      # Subir la imagen Docker a ECR de la web
       - name: Subir imagen Docker a ECR
-        run: docker push ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:latest
+        run: docker push ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-apachenodenpm
+
+      # Construir la imagen Docker para servidor json al tener otro nombre diferente a dockerfile hay que definirlo con el -f
+      - name: Construir imagen Docker
+        run: docker build -t img-jsonserver -f Dockerfile.json-server .  
+
+      # Etiquetar la imagen Docker del server json
+      - name: Etiquetar imagen Docker
+        run: docker tag img-jsonserver:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-jsonserver
+      
+      # Subir la imagen Docker a ECR del server json
+      - name: Subir imagen Docker a ECR
+        run: docker push ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-jsonserver
