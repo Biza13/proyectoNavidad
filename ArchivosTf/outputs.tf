@@ -5,3 +5,7 @@ output "s3" {
 output "ecr_repository_uri_url" {
   value = aws_ecr_repository.repositorio_ecr.repository_url
 }
+
+output "ecr_nombre_repositorio" {
+  value = aws_ecr_repository.repositorio_ecr.name
+}

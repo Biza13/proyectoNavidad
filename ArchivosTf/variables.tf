@@ -29,6 +29,6 @@ variable "s3"{
 }
 
 variable "ecr"{
-    description = "nombre de la ecr"
+    description = "nombre del repositorio ecr"
     type = string
 }
