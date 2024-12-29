@@ -37,19 +37,15 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      #- name: Configurar clave pública para Terraform
-      #  run: echo "public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}" >> $GITHUB_ENV
-
       - name: Terraform init
         id: init
         run: terraform init  
-        #working-directory: ./ArchivosTf
+        working-directory: ./ArchivosTf
        
       - name: Plan Terraform
         id: plan
-        #run: terraform plan -var "public_key=${{ env.public_key }}"
         run: terraform plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
-        #working-directory: ./ArchivosTf
+        working-directory: ./ArchivosTf
   
       - name: Terraform Apply
         env:
@@ -57,7 +53,7 @@ jobs:
          #run: terraform apply -auto-approve -var "public_key=${{ env.public_key }}"
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
          run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
-        #working-directory: ./ArchivosTf
+        working-directory: ./ArchivosTf
 
       #capturar los outputs de terraform y hacerlos como outputs del job para poder usarlos en otros jobs
       - name: Capturar output de Terraform (Bucket)
