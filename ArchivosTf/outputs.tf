@@ -9,3 +9,7 @@ output "ecr_repository_uri_url" {
 output "ecr_nombre_repositorio" {
   value = aws_ecr_repository.repositorio_ecr.name
 }
+
+output "security_group_id" {
+  value = aws_security_group.security.id
+}

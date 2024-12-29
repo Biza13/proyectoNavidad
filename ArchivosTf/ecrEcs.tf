@@ -19,10 +19,6 @@ resource "aws_ecs_task_definition" "apache_tarea" {
   #familia a la que pertenece la tarea
   family                = "apache-tasks"
 
-  #al ser academy nuestro role es labrole que hemos definido enel data arriba de este recurso
-  #execution_role_arn    = aws_iam_role.labrole.arn 
-  #task_role_arn         = aws_iam_role.labrole.arn  
-
   execution_role_arn    = data.aws_iam_role.labrole.arn
   task_role_arn         = data.aws_iam_role.labrole.arn 
 
@@ -78,4 +74,18 @@ resource "aws_ecs_task_definition" "apache_tarea" {
     }
 
   ])
+}
+
+#balanceador de carga para que siempre tengan la misma ip publica
+resource "aws_lb" "balanceador" {
+  name               = "balanceador de carga"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups   = [aws_security_group.security.id]
+  subnets            = [aws_security_group.security.id]
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "balanceador-de-carga"
+  }
 }
