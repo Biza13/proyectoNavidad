@@ -35,6 +35,9 @@ resource "aws_ecs_task_definition" "apache_tarea" {
       name      = "apache-container"
       image     = "${aws_ecr_repository.repositorio_ecr.repository_url}:img-apachenodenpm"
       essential = true
+      memory = 512
+      cpu = 256
+
       portMappings = [
         {
           containerPort = 80
@@ -48,6 +51,9 @@ resource "aws_ecs_task_definition" "apache_tarea" {
       name      = "json-api-container"
       image     = "${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver"
       essential = true 
+      memory = 512
+      cpu = 256
+
       portMappings = [
         {
           containerPort = 3000  # Puerto donde se expone el primer archivo JSON (usuarios.json)
