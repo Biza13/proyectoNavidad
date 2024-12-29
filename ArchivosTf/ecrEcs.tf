@@ -29,6 +29,10 @@ resource "aws_ecs_task_definition" "apache_tarea" {
   # Modo de red para Fargate
   network_mode          = "awsvpc"  
   requires_compatibilities = ["FARGATE"]
+
+  # Especificar recursos a nivel de la tarea
+  cpu                      = "512"
+  memory                   = "1024"
   
   container_definitions = jsonencode([
     { # Primer contenedor (Apache, para la página web)
