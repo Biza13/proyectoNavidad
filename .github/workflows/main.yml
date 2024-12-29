@@ -68,6 +68,7 @@ jobs:
       - name: Capturar nombre del repositorio ECR
         id: capturar_ecr_nombre
         run: echo "ecr_nombre_repositorio=$(terraform output -raw ecr_nombre_repositorio)" >> "$GITHUB_OUTPUT"
+        working-directory: ./ArchivosTf
 
       #crear artefactos con el nombre del bucket y con el nombre del repositorio, creara una carpeta si no existe y ahi metera los archivos 
       - name: Crear archivo con el nombre del bucket
