@@ -76,22 +76,23 @@ jobs:
 
       #crear artefactos con el nombre del bucket y con el nombre del repositorio
       - name: Crear archivo con el nombre del bucket
-        run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./terraform_outputs/bucket_name.txt
+        run: echo "${{ steps.capturar_bucket.outputs.bucket_nombre }}" > ./bucket_name.txt
 
       - name: Crear archivo con el nombre del repositorio ECR
-        run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./terraform_outputs/ecr_name.txt
+        run: echo "${{ steps.capturar_ecr_nombre.outputs.ecr_nombre_repositorio }}" > ./ecr_name.txt
 
       # Subir los archivos como artefactos
       - name: Subir artefactos con el nombre del bucket y el repositorio ECR
         uses: actions/upload-artifact@v4.5.0
         with:
-          name: terraform_outputs
-          #subira todo lo que haya en esta carpeta
-          path: ./terraform_outputs/
+          name: nombre bucket artefacto
+          path: ./bucket_name.txt 
 
-      #eliminar la carpeta creada para los archivos de los artefactos
-      - name: Eliminar la carpeta terraform_outputs y su contenido
-        run: rm -rf ./terraform_outputs    
+      - name: Subir artefactos con el nombre del bucket y el repositorio ECR
+        uses: actions/upload-artifact@v4.5.0
+        with:
+          name: nombre ecr artefacto
+          path: ./ecr_name.txt    
 
   # Segundo job para crear una imagenes de Docker y subirlas a la ECR
   creacion-y-subida-de-imagen:
