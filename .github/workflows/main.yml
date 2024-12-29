@@ -91,7 +91,7 @@ jobs:
 
       # Etiquetar la imagen Docker
       - name: Etiquetar imagen Docker
-        run: docker tag img-apachenodenpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:latest  
+        run: docker tag img-apachenodenpm:latest ${{ needs.despliegue.outputs.ecr_repository_uri_url }}:img-apachenodenpm  
 
       # Subir la imagen Docker a ECR
       - name: Subir imagen Docker a ECR
