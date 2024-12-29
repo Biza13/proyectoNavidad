@@ -15,9 +15,9 @@ jobs:
   despliegue:
     runs-on: ubuntu-latest
     
-    outputs:
-      bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
-      ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
+    #outputs:
+    #  bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
+    #  ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
       
     steps:
       # Este paso copia lo que hay en la rama main en la máquina virtual de Ubuntu
@@ -55,11 +55,13 @@ jobs:
       # Capturar los outputs de Terraform y hacerlos como outputs del job
       - name: Capturar output de Terraform (Bucket)
         id: capturar_bucket
-        run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
+        #run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
+        run: echo "bucket_nombre=$(terraform output -raw s3)" >> $GITHUB_ENV
 
       - name: Capturar URI del repositorio ECR
         id: capturar_ecr_uri_url
-        run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_OUTPUT"
+        #run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> "$GITHUB_OUTPUT"
+        run: echo "ecr_repository_uri_url=$(terraform output -raw ecr_repository_uri_url)" >> $GITHUB_ENV
 
   # Segundo job para crear una imagen de Docker y subirla a la ECR
   creacion-y-subida-de-imagen:
