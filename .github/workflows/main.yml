@@ -15,9 +15,9 @@ jobs:
   despliegue:
     runs-on: ubuntu-latest
     
-    #outputs:
-    #  bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
-    #  ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
+    outputs:
+      bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
+      ecr_repository_uri_url: ${{ steps.capturar_ecr_uri_url.outputs.ecr_repository_uri_url }}
       
     steps:
       # Este paso copia lo que hay en la rama main en la máquina virtual de Ubuntu
@@ -82,6 +82,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: "us-east-1"
+
+      - name: Verificar URI de ECR
+        run: echo "URI de ECR: ${{ needs.despliegue.outputs.ecr_repository_uri_url }}"
       
       # Logearse en la ECR
       - name: Logearse en AWS ECR
