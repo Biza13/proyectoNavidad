@@ -13,3 +13,8 @@ output "ecr_nombre_repositorio" {
 output "security_group_id" {
   value = aws_security_group.security.id
 }
+
+output "alb_url" {
+  description = "La URL pública para la web"
+  value = aws_lb.balanceador.dns_name
+}
