@@ -18,10 +18,10 @@ resource "null_resource" "crear_y_subir_imagenes" {
     command = <<EOT
       aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.repositorio_ecr.repository_url}
       
-      docker build -f ../Dockerfile -t ${aws_ecr_repository.repositorio_ecr.repository_url}:img-apachenodenpm .
+      docker build -f ./Dockerfile -t ${aws_ecr_repository.repositorio_ecr.repository_url}:img-apachenodenpm .
       docker push ${aws_ecr_repository.repositorio_ecr.repository_url}:img-apachenodenpm
 
-      docker build -f ../Dockerfile.json-server -t ${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver
+      docker build -f ./Dockerfile.json-server -t ${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver
       docker push ${aws_ecr_repository.repositorio_ecr.repository_url}:img-jsonserver
     EOT
   }
