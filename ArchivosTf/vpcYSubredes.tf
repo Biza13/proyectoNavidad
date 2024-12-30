@@ -43,7 +43,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-#creacion de l a tabla de enrutamiento
+#creacion de la tabla de enrutamiento
 resource "aws_route_table" "public-rt" {
   vpc_id = aws_vpc.Desarrollo-web-VPC.id
 
@@ -60,6 +60,23 @@ resource "aws_route_table" "public-rt" {
 #asociar la tabla de enrutamiento a la subred publica
 resource "aws_route_table_association" "rt-asociacion-publica" {
   subnet_id = aws_subnet.subred-publica.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
+# Subred pública en AZ2
+resource "aws_subnet" "subred-publica-az2" {
+  vpc_id                  = aws_vpc.Desarrollo-web-VPC.id
+  cidr_block              = var.cidrSubredPublicaAz
+  availability_zone       = "us-east-1b"
+  map_public_ip_on_launch = true
+  tags = {
+    "Name" = "subred-publica-az2"
+  }
+}
+
+# Asociar la tabla de enrutamiento a la subred pública de AZ2
+resource "aws_route_table_association" "rt-asociacion-publica-az2" {
+  subnet_id = aws_subnet.subred-publica-az2.id
   route_table_id = aws_route_table.public-rt.id
 }
 

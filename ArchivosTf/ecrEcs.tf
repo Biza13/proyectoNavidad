@@ -82,7 +82,7 @@ resource "aws_lb" "balanceador" {
   internal           = false
   load_balancer_type = "application"
   security_groups   = [aws_security_group.security.id]
-  subnets            = [aws_subnet.subred-publica.id, aws_subnet.subred-privada.id]
+  subnets            = [aws_subnet.subred-publica.id, aws_subnet.subred-publica_az2.id]
   enable_deletion_protection = false
 
   tags = {
@@ -270,9 +270,9 @@ resource "aws_ecs_service" "apache_service" {
   launch_type     = "FARGATE"
   
   network_configuration {
-    subnets          = [aws_subnet.subred-publica.id, aws_subnet.subred-privada.id]
-    security_groups = [aws_security_group.security.id]
-    assign_public_ip = true
+    subnets          = [aws_subnet.subred-privada.id] #ponemos el servicio de la pagina en la subred privada
+    security_groups = [aws_security_group.security_ecs.id]  #ponemos el grupo de seguridad de las ecs que no permiten entrada desde internet
+    assign_public_ip = false  #para que no asigne una ip publica
   }
 
   load_balancer {
@@ -291,9 +291,9 @@ resource "aws_ecs_service" "json_server_service_3000" {
   launch_type     = "FARGATE"
   
   network_configuration {
-    subnets          = [aws_subnet.subred-publica.id, aws_subnet.subred-privada.id]
-    security_groups  = [aws_security_group.security.id]
-    assign_public_ip = true
+    subnets          = [aws_subnet.subred-privada.id] #ponemos el servicio de los json en la subred privada
+    security_groups  = [aws_security_group.security_ecs.id]  #ponemos el grupo de seguridad de las ecs que no permiten entrada desde internet
+    assign_public_ip = false  #para que no asigne una ip publica
   }
 
   load_balancer {
@@ -312,9 +312,9 @@ resource "aws_ecs_service" "json_server_service_3001" {
   launch_type     = "FARGATE"
   
   network_configuration {
-    subnets          = [aws_subnet.subred-publica.id, aws_subnet.subred-privada.id]
-    security_groups  = [aws_security_group.security.id]
-    assign_public_ip = true
+    subnets          = [aws_subnet.subred-privada.id] #ponemos el servicio de los json en la subred privada
+    security_groups  = [aws_security_group.security_ecs.id]  #ponemos el grupo de seguridad de las ecs que no permiten entrada desde internet
+    assign_public_ip = false  #para que no asigne una ip publica
   }
 
   load_balancer {
@@ -333,9 +333,9 @@ resource "aws_ecs_service" "json_server_service_3002" {
   launch_type     = "FARGATE"
   
   network_configuration {
-    subnets          = [aws_subnet.subred-publica.id, aws_subnet.subred-privada.id]
-    security_groups  = [aws_security_group.security.id]
-    assign_public_ip = true
+    subnets          = [aws_subnet.subred-privada.id] #ponemos el servicio de los json en la subred privada
+    security_groups  = [aws_security_group.security_ecs.id]  #ponemos el grupo de seguridad de las ecs que no permiten entrada desde internet
+    assign_public_ip = false  #para que no asigne una ip publica
   }
 
   load_balancer {

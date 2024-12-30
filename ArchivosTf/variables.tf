@@ -13,6 +13,11 @@ variable "cidrSubredPublica"{
     type = string
 }
 
+variable "cidrSubredPublicaAz"{
+    description = "Rango de ips de la subred pública dos"
+    type = string
+}
+
 variable "cidrSubredPrivada"{
     description = "Rango de ips de la subred privada"
     type = string
