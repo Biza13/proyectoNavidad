@@ -114,6 +114,7 @@ resource "aws_lb_target_group" "apache_target_group" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.Desarrollo-web-VPC.id
+  target_type = "ip"  #hay que poner esto porque no estamos usando ec2 sino fargate serverless
 
   health_check {
     path                = "/"
@@ -150,6 +151,7 @@ resource "aws_lb_target_group" "json_target_group_3000" {
   port     = 3000
   protocol = "HTTP"
   vpc_id   = aws_vpc.Desarrollo-web-VPC.id
+  target_type = "ip"  #hay que poner esto porque no estamos usando ec2 sino fargate serverless
 
   health_check {
     path                = "/"
@@ -187,6 +189,7 @@ resource "aws_lb_target_group" "json_target_group_3001" {
   port     = 3001
   protocol = "HTTP"
   vpc_id   = aws_vpc.Desarrollo-web-VPC.id
+  target_type = "ip"  #hay que poner esto porque no estamos usando ec2 sino fargate serverless
 
   health_check {
     path                = "/"
@@ -223,6 +226,7 @@ resource "aws_lb_target_group" "json_target_group_3002" {
   port     = 3002
   protocol = "HTTP"
   vpc_id   = aws_vpc.Desarrollo-web-VPC.id
+  target_type = "ip"  #hay que poner esto porque no estamos usando ec2 sino fargate serverless
 
   health_check {
     path                = "/"

@@ -29,6 +29,7 @@ resource "aws_vpc" "Desarrollo-web-VPC" {
 resource "aws_subnet" "subred-publica" {
   vpc_id = aws_vpc.Desarrollo-web-VPC.id
   cidr_block = var.cidrSubredPublica
+  availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true        #necesario para las redes publicas
   tags = {
     "Name" = "subred-publica"
