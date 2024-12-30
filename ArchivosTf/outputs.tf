@@ -11,7 +11,7 @@ output "ecr_nombre_repositorio" {
 }
 
 output "security_group_id" {
-  value = aws_security_group.security.id
+  value = aws_security_group.lb_security.id
 }
 
 output "alb_url" {
