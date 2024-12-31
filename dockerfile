@@ -14,8 +14,8 @@ RUN apt update -y && \
     apt clean
 
 # Copia los archivos de tu página web al contenedor
-COPY ./index.html /var/www/html/index.html
-COPY ./Pagina /var/www/html/Pagina
+COPY ./index.html /var/www/html
+COPY ./Pagina/* /var/www/html/Pagina
 
 # Expone el puerto 80 para Apache
 EXPOSE 80
